@@ -1,41 +1,41 @@
 # corewriter-sdk
 
-The first Python SDK for interacting with HyperCore L1 directly from HyperEVM.
+The first Python SDK for HyperCore L1 on HyperEVM.
 
-Built and discovered by [@felixdoteth](https://x.com/felixdoteth)
+Built by [@felixdoteth](https://x.com/felixdoteth)
 
 ## What is CoreWriter?
 
-CoreWriter is a contract at `0x3333333333333333333333333333333333333333` on HyperEVM that lets you trigger HyperCore L1 actions directly from EVM transactions.
+Contract at 0x3333333333333333333333333333333333333333 on HyperEVM.
+Trigger HyperCore L1 actions directly from EVM transactions.
 
 ## Installation
 
-```bash
 pip install web3 eth-abi requests
-from corewriter import CoreWriter
 
+## Usage
+
+from corewriter import CoreWriter
 cw = CoreWriter(private_key="0x...")
 
-# Oracle prices
-print(cw.get_oracle_price(0))   # BTC
-print(cw.get_oracle_price(1))   # ETH
-print(cw.get_oracle_price(17))  # HYPE
+cw.get_oracle_price(0)        # BTC price
+cw.transfer_to_perp(100.0)    # EVM -> Perp
+cw.transfer_to_evm(100.0)     # Perp -> EVM
+cw.place_spot_order(10000, True, 70000, 0.001)  # spot order
+cw.place_perp_order(0, True, 70000, 0.001)      # perp order
+cw.cancel_all()               # cancel orders
+cw.get_perp_balance()         # check balance
 
-# Transfer $100 EVM -> Perp
-tx, status = cw.transfer_to_perp(100.0)
+## Oracle Indices
 
-# Place spot order
-tx, status = cw.place_spot_order(
-    asset=10000, is_buy=True, limit_price=70000, size=0.001
-)
+0 = BTC, 1 = ETH, 17 = HYPE
 
-# Place perp order
-tx, status = cw.place_perp_order(
-    asset=0, is_buy=True, limit_price=70000, size=0.001
-)
+## Notes
 
-# Cancel all
-tx, status = cw.cancel_all()
+- Actions are NOT atomic with EVM tx
+- Orders execute on next L1 block
+- Chain ID: 999
 
-# Check balance
-print(cw.get_perp_balance())
+## License
+
+MIT
